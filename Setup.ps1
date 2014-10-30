@@ -1,90 +1,60 @@
-﻿param($stage)
+﻿param($Flow)
 
-Start-Transcript -Path "$env:USERPROFILE\Desktop\Transcript$(get-date -Format yyyyMMdd.hhmm).txt"
-if ($PSScriptRoot) {$ScriptPath = $PSScriptRoot} else {$ScriptPath = "C:\EIC\Deploy"}
+schtasks.exe /CREATE /RU "BUILTIN\users" /SC ONLOGON /RL HIGHEST /TN "EIC" /tr "powershell.exe -noexit -file c:\deploy\Setup.ps1" /F
+$ScriptPath = "c:\deploy"
+Start-Transcript -Path "c:\users\public\Desktop\Transcript$(get-date -Format yyyyMMdd.hhmm).txt"
+if (test-path c:\deploy) {set-location c:\deploy} else {set-location c:\eic\deploy -ErrorAction Stop}
 
-. "$ScriptPath\Functions.ps1"
-. "$ScriptPath\SP_Functions.ps1"
-. "$ScriptPath\Lync_Functions.ps1"
-. "$ScriptPath\ADDS_Functions.ps1"
 
-LoadParameters
+[xml]$XML = Get-Content ".\Settings.xml" 
+$SpecialNodes = @("Hosts","DNSRecords","DerivedParameters","Stages","Functions")
+$ExclusionXPath = ""
+$SpecialNodes | % { $ExclusionXpath += "[not(self::$_)]" }
+
+$ConfigNodes = $XML | Select-XML -XPath "//Configuration/*$ExclusionXpath"
+$ConfigNodes | % { $_.Node.ChildNodes.Name | % { Set-Variable $_ -Value ($xml.SelectSingleNode("//$_").innertext) -Scope Script } }
+$XML.Configuration.Hosts.ChildNodes | % { Set-Variable $_.Name -Value $_ -Scope Script }
+    
+$DerivedParameters = $xml | Select-XML -XPath "//Configuration/DerivedParameters" 
+$DerivedParameters | % { $_.Node.ChildNodes.Name | %{ Set-Variable $_ -Value (& ([scriptblock]::create("$($xml.SelectSingleNode(""//$_"").innertext)"))) -Scope Script -Force }}
+    
+$FunctionNodes = Select-Xml -XPath "//Configuration/Functions/*" -xml $XML
+$FunctionNodes.node.ChildNodes | % {invoke-expression ". $($_.innertext)"}
+
+ValidateParameters
+
 if (Test-Path $StepFile) {[int]$Step = Get-Content $StepFile} else {$Step = 0}
 $Step++; $Step | Out-File $StepFile -Force
-ValidateParameters
-$Flow = Get-Content $FlowFile
-$LicenseKey2013 = $SP2013.licensekey
-$LicenseKey2010 = $SP2010.licensekey
 
+if (test-path $FlowFile) { 
+    $Flow = Get-Content $FlowFile
+    } ELSE {
+    $Flow | out-file $FlowFile
+    }
+Write-Host "Flow: $flow"
+Write-host "Step: $step"
 if (Test-Path $SharepointModule) {. $SharepointModule}
 
-
-if ($stage) {$flow = $stage}
-
-$CompletionBlock = {
-    Disable-Task "EIC"; throw "Done"
+$FlowNodes = Select-Xml -XPath "//Configuration/Flows" -xml $XML
+if (($FlowNodes.node.ChildNodes.Name -match "$Flow")) { 
+    $FlowNode = $FlowNodes.node.ChildNodes | ? Name -match $Flow
+    } ELSE {
+    Throw "No flow found matching: $Flow"
     }
 
-$ADDSFlow = {
-    switch ($step)
-        {
-            1 {Initialize -Settings $ADDS; Install-NetFX3 "DC"}
-            2 {Install-ADDSRSATFeatures; Install-Polipo}
-            3 {Install-ADDSFeatures}
-            4 {Install-Forest}
-            5 {Create-ADObjects; RegisterDNS; Install-PKI}
-            6 {Install-ADFS3}
-            7 {&$CompletionBlock}
-        }
-    }
-
-$SP2013Flow = {
-    switch ($step)
-        {
-            1 {Initialize -Settings $SP2013}
-            2 {Install-NetFX3 "SP"; Setup-Sharepoint}
-            3 {Install-SQLExpress "Sharepoint"; Install-Sharepoint}
-            4 {&$CompletionBlock}
-        }
-    }
-
-
-$Lync2013StdFlow = {
-    switch ($step)
-        {
-            1 {Initialize -Settings $Lync2013Std}
-            2 {Install-NetFX3 "Lync"; InstallWasp;}# DeployLync2013Std}
-            3 {}#DeployLyncRoundTwo}
-            3 {}#InstallLyncUpdates}
-            4 {}#ConfigureLyncUpdates}
-            5 {}#&$CompletionBlock}
-        }
-    }
-
-$W7ClientFlow = {
-    switch ($step)
-        {
-            1 {Initialize -Settings $W7Client}
-            #2 {Install-Chocolatey}
-            2 {&$CompletionBlock}
-        }
-    }
-
-
-
-switch ($Flow)
-    {
-        "adds"        {&$ADDSFlow}
-        "sql"         {&$SQLFlow}
-        "sqlsp2013"   {&$SP2013SQLFlow}
-        "sp2013"      {&$SP2013Flow}
-        "sp2013post"  {Finalize-SP2013}
-        "Lync2013Std" {&$Lync2013StdFlow}
-        "Lync2010Std" {&$Lync2010StdFlow}
-        "W7Client"    {&$W7ClientFlow}
-        "W8Client"    {&$W7ClientFlow}
-    }
-
-ipconfig /all
+$Command = $FlowNode.Childnodes | ? Order -eq $Step | Select -ExpandProperty Command
+Invoke-Expression $Command
 
 if (!($Error[0])) {Restart-Computer} else {Write-Host "Errors!"; $Error | Select-Object * | Out-File c:\errors.txt -Append; notepad.exe c:\errors.txt}
+
+
+#            1 {Initialize -Settings $Lync2013Std}
+#            2 {Install-NetFX3 "Lync"; InstallWasp;}# DeployLync2013Std}
+#            3 {}#DeployLyncRoundTwo}
+#            3 {}#InstallLyncUpdates}
+#            4 {}#ConfigureLyncUpdates}
+#            5 {}#&$CompletionBlock}
+
+
+
+

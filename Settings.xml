@@ -10,12 +10,31 @@
     <DomainAdmin>"$NetBiosName\Administrator"</DomainAdmin>
     <DomainUserPath>"OU=$UserOU,DC=$NetBiosName,DC=$TLD"</DomainUserPath>
     <DomainGroupPath>"OU=$GroupOU,DC=$NetBiosName,DC=$TLD"</DomainGroupPath>
+    <LicenseKey2013>$SP2013.licensekey</LicenseKey2013>
+    <LicenseKey2010>$SP2010.licensekey</LicenseKey2010>
     <DomainUserList>(Get-Content "$ScriptPath\DomainUserList.txt")</DomainUserList>
     <DomainGroupList>(Get-Content "$ScriptPath\DomainGroupList.txt")</DomainGroupList>
     <LyncUserList>(Get-Content "$ScriptPath\DomainUserList.txt" | Select-String -Pattern "Lync")</LyncUserList>
     <SharepointUserList>(Get-Content "$ScriptPath\DomainUserList.txt" | Select-String -Pattern "Sharepoint")</SharepointUserList>
     <DomainName>"$NetBiosName.$TLD"</DomainName>
   </DerivedParameters>
+  <Flows>
+    <SP2013>
+      <Stage Order="1" Command="Initialize -Settings $SP2013" />
+      <Stage Order="2" Command="Install-NetFX3 &quot;SP&quot;; Setup-Sharepoint" />
+      <Stage Order="3" Command="Install-SQLExpress &quot;Sharepoint&quot;; Install-Sharepoint" />
+      <Stage Order="4" Command="Disable-Task &quot;EIC&quot;; throw &quot;Done&quot;" />
+    </SP2013>
+    <ADDS>
+      <Stage Order="1" Command="Initialize -Settings $ADDS; Install-NetFX3 &quot;DC&quot;" />
+      <Stage Order="2" Command="Install-ADDSRSATFeatures; Install-Polipo"></Stage>
+      <Stage Order="3" Command="Install-ADDSFeatures" />
+      <Stage Order="4" Command="Install-Forest" />
+      <Stage Order="5" Command="Create-ADObjects; RegisterDNS; Install-PKI" />
+      <Stage Order="6" Command="Install-ADFS3" />
+      <Stage Order="7" Command="Disable-Task &quot;EIC&quot;; throw &quot;Done&quot;" />
+    </ADDS>
+  </Flows>
   <Hosts>
     <ADDS hostname="WINDEV-DC" ipaddress="10.72.111.205" role="DC" version="2012R2" />
     <SP2013 hostname="WINDEV-SP2013" ipaddress="10.72.111.206" role="SP" version="2013" licensekey="00000-00000-00000-00000-00000" />
@@ -41,6 +60,12 @@
     <SP2013Media>d:</SP2013Media>
     <LyncMedia>d:</LyncMedia>
   </Paths>
+  <Functions>
+    <Function>c:\deploy\Lync_Functions.ps1</Function>
+    <Function>c:\deploy\ADDS_Functions.ps1</Function>
+    <Function>c:\deploy\SP_Functions.ps1</Function>
+    <Function>c:\deploy\Functions.ps1</Function>
+  </Functions>
   <Networking>
     <NetMask>255.255.255.0</NetMask>
     <Gateway>10.72.110.1</Gateway>

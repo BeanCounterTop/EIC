@@ -1,29 +1,17 @@
 ﻿
-Function LoadParameters {
-    if ($PSScriptRoot) {$ScriptPath = $PSScriptRoot} else {$ScriptPath = "C:\EIC\Deploy"}
-    [xml]$Script:XML = Get-Content "$ScriptPath\Settings.xml" 
-    $SpecialNodes = @("Hosts","DNSRecords","DerivedParameters")
-    $ExclusionXPath = ""
-    $SpecialNodes | % { $ExclusionXpath += "[not(self::$_)]" }
-    $ConfigNodes = $XML | Select-XML -XPath "//Configuration/*$ExclusionXpath"
 
-    $ConfigNodes | % { $_.Node.ChildNodes.Name | % { Set-Variable $_ -Value ($xml.SelectSingleNode("//$_").innertext) -Scope Script } }
-    $XML.Configuration.Hosts.ChildNodes | % { Set-Variable $_.Name -Value $_ -Scope Script }
-    
-    $DerivedParameters = $xml | Select-XML -XPath "//Configuration/DerivedParameters" 
-    $DerivedParameters | % { $_.Node.ChildNodes.Name | %{ Set-Variable $_ -Value (& ([scriptblock]::create("$($xml.SelectSingleNode(""//$_"").innertext)"))) -Scope Script -Force }}
-    
-    }
 
 Function ValidateParameters {
      $RegexToCheck = "$([regex]::Escape($SetupPath))"
      $PathsToCheck = $XML.Configuration.Paths.ChildNodes | ? { $_.innertext -match $RegexToCheck -AND $_.innertext -match "\."} | %{$_.innertext}
+     $PathsToCheck = $XML.Configuration.Functions.ChildNodes | ? { $_.innertext -match $RegexToCheck -AND $_.innertext -match "\."} | %{$_.innertext}
      $MissingFiles = ""
      $PathsToCheck | % { if (-NOT (test-path $_)) {$MissingFiles += "$_`r`n"} }
      if ($MissingFiles) {write-host "Missing files:";write-host $MissingFiles; throw "Missing files!"}
     }
 
 Function Initialize($Settings) {
+
     Write-Output "Initializing $($Settings.Hostname)"
     Disable-Task "\Microsoft\Windows\Server Manager\ServerManager"
     Create-LocalUser "administrator" $Password
@@ -194,18 +182,26 @@ Function Join-Domain ($ServerName, $Role){
         }
     }
 Function Install-NetFX3 {
-    if ($Role -eq "DC"){New-SmbShare -Name winsxs -Path C:\windows\winsxs -FullAccess "Everyone"}
-    if (!((Get-WindowsFeature net-framework-core).installed)){
-        If ($Role -eq "DC"){
-            $Source = $Server2012Media
+    if ($Role -eq "DC"){New-SmbShare -Name winsxs -Path C:\windows\winsxs -FullAccess "Everyone"}   
+    if ( -NOT ((Get-WindowsFeature Net-Framework-Core).installed)){
+        $Server2012MediaDrive = (Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match "IR3_SSS_X64FRE" | Select -First 1).Drive
+        if ($Server2012MediaDrive) {
+            $source = "$Server2012MediaDrive\sources\sxs"
             } ELSE {
-            $Source = "\\$($ADDS.hostname)\winsxs"
+                If ($Role -match "DC"){
+                    $Source = $Server2012Media
+                } ELSE {
+                    $Source = "\\$($ADDS.hostname)\winsxs"
+                }
             }
         While (!(Test-Path $Source)){Write-Output "NetFX3 Installation Error: Unable to reach $source.  Trying again in 5 seconds...";Start-Sleep 5}
         Start-Process -FilePath "DISM.exe" -ArgumentList "/Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:$Source" -Wait
-        } Else {
-        Write-Output "NetFX3 already installed."
-        }
+    } Else {
+    Write-Output "NetFX3 already installed."
+    }
+    
+    
+    
     }
 Function Create-FirewallRule ($Name, $Protocol, $Direction, $Port){
      Invoke-Expression "netsh advfirewall firewall add rule name=""$Name"" protocol=$Protocol dir=$Direction localport=$Port action=allow enable=yes"
