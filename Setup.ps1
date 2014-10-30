@@ -5,9 +5,8 @@ $ScriptPath = "c:\deploy"
 Start-Transcript -Path "c:\users\public\Desktop\Transcript$(get-date -Format yyyyMMdd.hhmm).txt"
 if (test-path c:\deploy) {set-location c:\deploy} else {set-location c:\eic\deploy -ErrorAction Stop}
 
-
 [xml]$XML = Get-Content ".\Settings.xml" 
-$SpecialNodes = @("Hosts","DNSRecords","DerivedParameters","Stages","Functions")
+$SpecialNodes = @("Hosts","DNSRecords","DerivedParameters","Stages","Functions","AutoSPInstallerXML")
 $ExclusionXPath = ""
 $SpecialNodes | % { $ExclusionXpath += "[not(self::$_)]" }
 
@@ -21,9 +20,20 @@ $DerivedParameters | % { $_.Node.ChildNodes.Name | %{ Set-Variable $_ -Value (& 
 $FunctionNodes = Select-Xml -XPath "//Configuration/Functions/*" -xml $XML
 $FunctionNodes.node.ChildNodes | % {invoke-expression ". $($_.innertext)"}
 
+$AutoSPInstallerNode = $XML.SelectSingleNode("//Configuration/AutoSPInstallerXML/Configuration")
+$AutoSPInstallerXML=New-Object System.XML.XMLDocument
+$ImportNode = $AutoSPInstallerXML.ImportNode($AutoSPInstallerNode,$True)
+$AutoSPInstallerXML.AppendChild($ImportNode)
+$AutoSPInstallerXML.save($AutoSPInstallerXMLFile)
+
+
 ValidateParameters
 
-if (Test-Path $StepFile) {[int]$Step = Get-Content $StepFile} else {$Step = 0}
+if (Test-Path $StepFile) {
+    [int]$Step = Get-Content $StepFile
+    } else {
+    $Step = 0
+    }
 $Step++; $Step | Out-File $StepFile -Force
 
 if (test-path $FlowFile) { 
@@ -38,6 +48,9 @@ if (Test-Path $SharepointModule) {. $SharepointModule}
 $FlowNodes = Select-Xml -XPath "//Configuration/Flows" -xml $XML
 if (($FlowNodes.node.ChildNodes.Name -match "$Flow")) { 
     $FlowNode = $FlowNodes.node.ChildNodes | ? Name -match $Flow
+    if (-NOT $FlowNode) { 
+        Throw "Error getting flow node: $Flow" 
+        }
     } ELSE {
     Throw "No flow found matching: $Flow"
     }
@@ -48,12 +61,6 @@ Invoke-Expression $Command
 if (!($Error[0])) {Restart-Computer} else {Write-Host "Errors!"; $Error | Select-Object * | Out-File c:\errors.txt -Append; notepad.exe c:\errors.txt}
 
 
-#            1 {Initialize -Settings $Lync2013Std}
-#            2 {Install-NetFX3 "Lync"; InstallWasp;}# DeployLync2013Std}
-#            3 {}#DeployLyncRoundTwo}
-#            3 {}#InstallLyncUpdates}
-#            4 {}#ConfigureLyncUpdates}
-#            5 {}#&$CompletionBlock}
 
 
 
