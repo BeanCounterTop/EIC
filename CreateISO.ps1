@@ -1,7 +1,6 @@
 ﻿$ISOPath = "$Env:UserProfile\Desktop\deploy.iso"
 $SourcePath = "c:\eic\deploy\."
-
-
+Get-ChildItem $SourcePath -Recurse | Select -ExpandProperty FullName | out-file "$SourcePath\FileList.txt"
 
 function New-IsoFile 
 { 
