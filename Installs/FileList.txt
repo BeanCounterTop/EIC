@@ -1,9 +1,0 @@
-inspect.exe
-LDAPCP.wsp
-LyncServerUpdateInstaller.exe
-Procmon.exe
-psexec.exe
-Silverlight_X64.exe
-SQLEXPR_x64_ENU.exe
-XMLNotepad.zip
-polipo\polipo.exe

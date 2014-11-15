@@ -90,7 +90,7 @@ Function Install-ADFS3 {
     Set-ADFSProperties –ExtendedProtectionTokenCheck None
     Set-ADFSProperties -WIASupportedUserAgents @(“MSIE 6.0", “MSIE 7.0", “MSIE 8.0", “MSIE 9.0",“MSIE 10.0", “Trident/7.0", “MSIPC”, “Windows Rights Management Client”, "Mozilla/5.0")
     Restart-Service ADFSSrv
-
+    Invoke-Webrequest -Uri "https://adfs3.$DomainName/FederationMetadata/2007-06/FederationMetadata.xml" -OutFile "C:\Users\Public\Desktop\FederationMetadata.xml.txt"
     }
 Function Install-ADDSFeatures {
     Add-WindowsFeature -Name "ad-domain-services" -IncludeAllSubFeature -IncludeManagementTools; 

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<purple version='1.0'>
+	<blist>
+		<group name='Pinned Contacts'/>
+		<group name='Other Contacts'/>
+		<group>
+			<setting name='collapsed' type='bool'>1</setting>
+			<contact>
+				<buddy account='LyncUser2@Jivedev.com,LyncUser2@Jivedev.com' proto='prpl-sipe'>
+					<name>sip:lyncuser1@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser1@jivedev.com</setting>
+				</buddy>
+				<setting name='gtk-mute-sound' type='bool'>0</setting>
+			</contact>
+			<contact>
+				<buddy account='LyncUser2@Jivedev.com,LyncUser2@Jivedev.com' proto='prpl-sipe'>
+					<name>sip:lyncuser3@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415752659</setting>
+					<setting name='email' type='string'>LyncUser3@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser1@Jivedev.com,LyncUser1@Jivedev.com' proto='prpl-sipe'>
+					<name>sip:lyncuser2@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser2@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser3@Jivedev.com,jivedev\LyncUser3' proto='prpl-sipe'>
+					<name>sip:lyncuser2@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser2@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser2@Jivedev.com,LyncUser2@Jivedev.com' proto='prpl-sipe'>
+					<name>sip:lyncuser3@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser3@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser1@Jivedev.com,LyncUser1@Jivedev.com' proto='prpl-sipe'>
+					<name>sip:lyncuser3@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser3@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser3@Jivedev.com,jivedev\LyncUser3' proto='prpl-sipe'>
+					<name>sip:lyncuser1@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415752659</setting>
+					<setting name='email' type='string'>LyncUser1@jivedev.com</setting>
+				</buddy>
+			</contact>
+			<contact>
+				<buddy account='LyncUser3@Jivedev.com,jivedev\LyncUser3' proto='prpl-sipe'>
+					<name>sip:lyncuser1@jivedev.com</name>
+					<setting name='last_seen' type='int'>1415923518</setting>
+					<setting name='email' type='string'>LyncUser1@jivedev.com</setting>
+				</buddy>
+			</contact>
+		</group>
+	</blist>
+	<privacy>
+		<account proto='prpl-sipe' name='LyncUser1@Jivedev.com,LyncUser1@Jivedev.com' mode='1'/>
+		<account proto='prpl-sipe' name='LyncUser2@Jivedev.com,LyncUser2@Jivedev.com' mode='1'/>
+		<account proto='prpl-sipe' name='LyncUser3@Jivedev.com,jivedev\LyncUser3' mode='1'/>
+	</privacy>
+</purple>

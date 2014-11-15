@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<statuses version='1.0'>
+	<status name='Auto-Cached' transient='true' created='1416007278' lastused='1416007278' usage_count='1'>
+		<state>available</state>
+		<message>Lynctastic!</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,lyncuser3@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1416007128' lastused='1416007128' usage_count='1'>
+		<state>available</state>
+		<message>Lynctastic!</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1416007103' lastused='1416007103' usage_count='1'>
+		<state>available</state>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1416007277' lastused='0' usage_count='0'>
+		<state>away</state>
+		<message>I&apos;m not here right now</message>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1415923694' lastused='0' usage_count='0'>
+		<state>available</state>
+	</status>
+</statuses>

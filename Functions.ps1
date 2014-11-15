@@ -14,6 +14,7 @@ Function Initialize($Settings) {
 
     Write-Output "Initializing $($Settings.Hostname)"
     Disable-Task "\Microsoft\Windows\Server Manager\ServerManager"
+    Set-LocalSecurityPolicy
     Create-LocalUser "administrator" $Password
     Add-Registry 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' 'AutoAdminLogon' '1' 'String'
     Add-Registry 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' 'DefaultUserName' 'Administrator' 'String'
@@ -128,7 +129,21 @@ Function RegisterDNS {
         }
     }
 
+Function Set-LocalSecurityPolicy {
+    $SecEditPath = "$env:temp\secpol.cfg"
+    secedit /export /cfg $SecEditPath
+    (Get-Content $SecEditPath).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File $SecEditPath
+    (Get-Content $SecEditPath).replace("PasswordHistorySize = 10", "PasswordHistorySize = 0") | Out-File $SecEditPath
+    (Get-Content $SecEditPath).replace("MinimumPasswordLength  = 8", "MinimumPasswordLength  = 1") | Out-File $SecEditPath
+    secedit /configure /db c:\windows\security\local.sdb /cfg $SecEditPath /areas SECURITYPOLICY
+
+    }
+
+
 Function Create-LocalUser ($Username, $Password) {
+
+
+
     if (-not [ADSI]::Exists("WinNT://./$username")) {
         $cn = [ADSI]"WinNT://."
         $user = $cn.Create("User","$Username")
@@ -184,7 +199,7 @@ Function Join-Domain ($ServerName, $Role){
 Function Install-NetFX3 {
     if ($Role -eq "DC"){New-SmbShare -Name winsxs -Path C:\windows\winsxs -FullAccess "Everyone"}   
     if ( -NOT ((Get-WindowsFeature Net-Framework-Core).installed)){
-        $Server2012MediaDrive = (Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match "IR3_SSS_X64FRE" | Select -First 1).Drive
+        $Server2012MediaDrive = (Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match $Server2012R2ISOLabel | Select -First 1).Drive
         if ($Server2012MediaDrive) {
             $source = "$Server2012MediaDrive\sources\sxs"
             } ELSE {

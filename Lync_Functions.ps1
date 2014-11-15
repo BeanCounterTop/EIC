@@ -84,6 +84,15 @@ Function EnableLyncUsers {
         }
     }
 
+
+Function Update-LyncTopologyXML{
+    $Entries = get-content $TopologyFile | Select-String -Pattern "\%\w+\%" | %{$_.matches[0].groups.value} | select -Unique
+    $RawXML = get-content $TopologyFile -raw
+    foreach ($Entry in $Entries) {$RawXML = $RawXML -replace $Entry,(Get-Content "Variable:\$($Entry -replace '%')")}
+    [xml]$XML = $RawXML
+    $xml.Save($TopologyFile)
+    }
+
 Function InstallWasp(){
     Copy-Item -Path "$($PowershellModules)\*" -Destination "C:\Windows\System32\WindowsPowerShell\v1.0\Modules" -Recurse -Force
     Import-Module WASP
@@ -94,45 +103,66 @@ Function InstallLyncUpdates {
     }
 
 Function ConfigureLyncUpdates {
-    Install-CsDatabase -ConfiguredDatabases -SqlServerFqdn "$env:computername.$env:userdnsdomain" -Verbose
+    Install-CsDatabase -ConfiguredDatabases -SqlServerFqdn "$env:computername.$env:userdnsdomain" -Verbose # -DatabasePaths "c:\csdata\rtcdatabasestore\rtclocal\dbpath"
     Install-CsDatabase -CentralManagementDatabase -SqlServerFqdn "$env:computername.$env:userdnsdomain" -SqlInstanceName RTC -Verbose
     Enable-CsTopology
     Start-Process "$Env:ProgramFiles\Microsoft Lync Server 2013\Deployment\Bootstrapper.exe" -wait
     }
 
+Function Install-LyncDatabases {
+    Install-SQLExpress "RTCLocal" 
+    Install-SQLExpress "LYNCLocal" 
+    Install-SQLExpress "RTC"
+    }
+
 Function DeployLync2013Std {   
-    InstallSQLExpress "RTCLocal" 
-    InstallSQLExpress "LYNCLocal" 
-    InstallSQLExpress "RTC"
-    AddLyncShare
-    Install-Windowsfeature RSAT-ADDS
-    InstallPreReqs
-    InstallLyncBinaries
-    InstallTools
-    import-module 'C:\Program Files\Common Files\Microsoft Lync Server 2013\Modules\Lync\Lync.psd1'
-    Install-CSAdServerSchema -Confirm:$false -Verbose
-    Enable-CSAdForest  -Verbose -Confirm:$false
-    Enable-CSAdDomain -Verbose -Confirm:$false 
-    DeployTopology
-    Add-ADGroupMember "CSAdministrator" -Members "Domain Admins"    
+    Update-LyncTopologyXML;
+    AddLyncShare;
+    Install-Windowsfeature RSAT-ADDS;
+    InstallPreReqs;
+    InstallLyncBinaries;
+    InstallTools;
     }
 
 Function DeployLyncRoundTwo {
-    InstallServerComponents
-    ConfigureLocalManagementStore
-    InstallMoreServerComponents
-    ConfigureLyncCertificates
-    Start-CSWindowsService -NoWait -Verbose
-    Invoke-CsManagementStoreReplication
-    EnableLyncUsers
-    Add-SRVRecord $Env:Computername "_sipinternal._tcp" 5061
+    Install-CSAdServerSchema -Confirm:$false -Verbose;
+    Enable-CSAdForest  -Verbose -Confirm:$false;
+    Enable-CSAdDomain -Verbose -Confirm:$false;
+    Add-ADGroupMember "CSAdministrator" -Members "Domain Admins";
+    Deploy-Topology;
     }
+
+Function DeployLyncRoundThree {
+    InstallServerComponents;
+    ConfigureLocalManagementStore;
+    InstallMoreServerComponents;
+    ConfigureLyncCertificates;
+    Start-CSWindowsService -Verbose;
+    Invoke-CsManagementStoreReplication;
+    EnableLyncUsers;
+    Add-SRVRecord $Env:Computername "_sipinternal._tcp" 5061;
+    }
+
+
+Function Configure-Pidgin {
+   
+    $PidginConfigXML = "C:\deploy\Installs\PidginPortable\App\.purple\accounts.xml"
+   #Todo: Configure Pidgin XML dynamically 
+    
+    $LyncCertThumbprint = Get-CSCertificate -type Default | Select -ExpandProperty Thumbprint
+    $LyncCertBytes = Get-ChildItem Cert:\LocalMachine\My | ? Thumbprint -match $LyncCertThumbprint | Select-Object -ExpandProperty RawData
+    $PidginCertPath = "C:\deploy\Installs\PidginPortable\App\.purple\certificates\x509\tls_peers"
+    $PidginAppPath = "C:\deploy\Installs\PidginPortable\App\Pidgin\pidgin-portable.exe"
+    [System.IO.File]::WriteAllBytes("$PidginCertPath\$Env:Computername.$DomainName", $LyncCertBytes)
+    Copy-Item "$Env:LogonServer\c$\windows\system32\certsrv\CertEnroll\*.crt" -Destination "$PidginCertPath\$($ADDS.hostname)"
+    schtasks.exe /CREATE /RU "$DomainAdmin" /RP "$Password" /SC ONSTART /TN "Pidgin" /tr "cmd.exe /c $PidginAppPath" /F
+    }
+
 
 ###########################################
 ######## UI Automation Functions ##########
 ###########################################
 Function InstallLyncBinaries {
-
     #Start-Process -FilePath "msiexec.exe" -ArgumentList " /i C:\LyncMedia\Setup\amd64\Setup\ocscore.msi /qn /norestart" -wait
     #Start-Process -FilePath "MSIExec.exe" -ArgumentList "/i D:\setup\amd64\SQLSysClrTypes.msi /qn" -Wait
     #Start-Process -FilePath "MSIExec.exe" -ArgumentList "/i D:\setup\amd64\setup\admintools.msi /qn" -Wait
@@ -155,7 +185,7 @@ Function InstallTools {
     $App = Start-Process -FilePath  "C:\Program Files\Microsoft Lync Server 2013\Deployment\Deploy.exe" -PassThru
     do {Write-Output "Waiting for Deployment dialog...";start-sleep 3}
     until (Select-UIElement -AutomationID "Window_1")
-    $Process = Select-UIElement -AutomationID "Window_1"
+    $Process = Select-UIElement -AutomationID "Window_1" -Force
     WaitUntilReady $Process
     $Process |  Send-UIKeys "%t"
     WaitUntilReady $Process
@@ -230,7 +260,7 @@ Function InstallMoreServerComponents {
     }
 
 
-Function DeployTopology {
+Function Deploy-Topology {
     $App = Start-Process -FilePath "C:\Program Files\Microsoft Lync Server 2013\Administrative Tools\Microsoft.Rtc.Management.TopologyBuilder.exe" -PassThru
     Start-Sleep 5
     Select-UIElement -AutomationId "TopologyBuilderStartupDialogData" -Recurse | Select-UIElement -AutomationId "RadioButton_2"  -Recurse | Invoke-SelectionItem.Select

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<statuses version='1.0'>
+	<status name='Auto-Cached' transient='true' created='1415907837' lastused='1415907837' usage_count='1'>
+		<state>available</state>
+		<message>Lynctastic!</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,jivedev\lyncuser3</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1415907771' lastused='1415907771' usage_count='1'>
+		<state>available</state>
+		<message>Lynctastic!</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,jivedev\lyncuser3</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>Lynctastic!</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1415907767' lastused='1415907767' usage_count='1'>
+		<state>available</state>
+		<message>I&amp;apos;m not here right now</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,jivedev\lyncuser3</account>
+			<state>available</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>available</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1415907766' lastused='1415907766' usage_count='1'>
+		<state>available</state>
+		<message>I&apos;m not here right now</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,jivedev\lyncuser3</account>
+			<state>available</state>
+			<message>I&apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>available</state>
+			<message>I&apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>available</state>
+			<message>I&apos;m not here right now</message>
+		</substatus>
+	</status>
+	<status name='Auto-Cached' transient='true' created='1415907746' lastused='1415907745' usage_count='1'>
+		<state>away</state>
+		<message>I&amp;apos;m not here right now</message>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser3@jivedev.com,jivedev\lyncuser3</account>
+			<state>away</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser2@jivedev.com,lyncuser2@jivedev.com</account>
+			<state>away</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+		<substatus>
+			<account protocol='prpl-sipe'>lyncuser1@jivedev.com,lyncuser1@jivedev.com</account>
+			<state>away</state>
+			<message>I&amp;apos;m not here right now</message>
+		</substatus>
+	</status>
+</statuses>

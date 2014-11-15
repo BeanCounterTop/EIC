@@ -528,7 +528,7 @@ If (MatchComputerName $farmServers $env:COMPUTERNAME)
                     }
                 }
             }
-        powershell -noexit -file c:\deploy\setup.ps1 -stage sp2013post
+        powershell -noexit -file c:\deploy\setup.ps1 -flow SPPost
         
         }
     }

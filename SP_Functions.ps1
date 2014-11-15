@@ -28,6 +28,7 @@ Function Finalize-SP2013 {
     Update-TrustedIdentityTokenIssuer "portal" "adfs3" "https://portal.$DomainName" 
     Update-TrustedIdentityTokenIssuer "mysites" "adfs3" "https://mysites.$DomainName"
     Add-SPWebAppGroupClaim "https://portal.$DomainName" "GroupClaim" "adfs3.$DomainName"
+
     Throw "No reboot needed."
     }
 Function Add-SPWebAppGroupClaim ($WebAppUrl, $GroupName, $ADFS_STS) {
@@ -50,7 +51,22 @@ Function Install-Sharepoint {
     start-process -FilePath "$AutoSPInstallerFile" -argumentlist "$AutoSPInstallerXMLFile"
     throw "Installing Sharepoint, no reboot required."
     }
+
+Function Prepare-SharepointFiles {
+    $ISOLabel = Get-Variable -Name "SP$Env:Version`ISOLabel" -ValueOnly
+    $SPMedia = (Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match $ISOLabel | Select -First 1).Drive
+    if (-NOT $SPMedia) {
+        do {write-host "Please insert Sharepoint $Env:Version media with a label of $ISOLabel";$x = read-host "Press any key to continue"}
+        until ((Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match $ISOLabel | Select -First 1))
+        $SPMedia = (Get-WmiObject -Class "Win32_CDROMDrive" | ? VolumeName -match $ISOLabel | Select -First 1).Drive
+        }
+        $SPFileDestination = Get-Variable -name "SP$Env:Version`FilePath" -ValueOnly
+        copy-item -Path "$SPMedia\*" -Recurse -Destination $SPFileDestination -Force
+    }
+
+
 Function Setup-Sharepoint {
+    Prepare-SharepointFiles
     Update-AutoSPInstallerXML
     Import-Module ServerManager
     Install-WindowsFeature "RSAT-AD-Tools"
@@ -84,5 +100,3 @@ Function Update-AutoSPInstallerXML{
 #New-SPWebApplication -Name "Curltest2" -ApplicationPool "Curltest2" -AuthenticationMethod "NTLM" -ApplicationPoolAccount (Get-SPManagedAccount "pocketdomain\sp_farm") -Port 80 -URL "https://curltest2.pocketdomain.corp" -AuthenticationProvider (New-SPAuthenticationProvider -UseWindowsIntegratedAuthentication)
 #$ap = New-SPAuthenticationProvider -UseWindowsIntegratedAuthentication 
 #Get-SPWebApplication -Identity http://curltest.pocketdomaincorp | New-SPWebApplicationExtension -Name IntranetSite -HostHeader curltest2intranet -Zone Intranet -URL http://intranet.sitename.com -Port 9876 -AuthenticationProvider $ap
-
-#chevy SUV 931BCM

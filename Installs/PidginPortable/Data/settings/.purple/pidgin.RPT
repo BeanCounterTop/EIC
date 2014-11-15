@@ -1,0 +1,62 @@
+-------------------
+
+Error occured on Tuesday, November 11, 2014 at 16:30:50.
+
+Windows Version 6.2 Build 9200 
+
+C:\deploy\Installs\PidginPortable\App\Pidgin\pidgin-portable.exe caused an Access Violation at location 68609843 in module C:\deploy\Installs\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll Reading from location 00000000.
+
+Registers:
+eax=00000000 ebx=00000000 ecx=00000000 edx=00270000 esi=03656c98 edi=037897b8
+eip=68609843 esp=0028ebb4 ebp=0028ebb8 iopl=0         nv up ei pl nz na po nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00210206
+
+Call stack:
+         C:\deploy\Installs\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll [2.28.8.0]
+68609843 C:\deploy\Installs\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll  g_str_hash
+         C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+742492B4 C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll
+74254B45 C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll
+         C:\Windows\SYSTEM32\msvcrt.dll [7.0.9600.16384]
+75909A22 C:\Windows\SYSTEM32\msvcrt.dll  free
+75909A15 C:\Windows\SYSTEM32\msvcrt.dll  free
+         C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+74242D46 C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll
+         C:\Windows\SYSTEM32\msvcrt.dll [7.0.9600.16384]
+75909A22 C:\Windows\SYSTEM32\msvcrt.dll  free
+         C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+7427A3E3 C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll
+742433A6 C:\deploy\Installs\PidginPortable\App\Pidgin\plugins\libsipe.dll
+
+
+-------------------
+
+Error occured on Tuesday, November 11, 2014 at 16:34:07.
+
+Windows Version 6.2 Build 9200 
+
+C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\pidgin-portable.exe caused an Access Violation at location 68609843 in module C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll Reading from location 00000000.
+
+Registers:
+eax=00000000 ebx=00000000 ecx=00000000 edx=00430000 esi=04c68e10 edi=03c71070
+eip=68609843 esp=0028ebb4 ebp=0028ebb8 iopl=0         nv up ei pl nz na po nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00210206
+
+Call stack:
+         C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll [2.28.8.0]
+68609843 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\Gtk\bin\libglib-2.0-0.dll  g_str_hash
+         C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+734792B4 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll
+73484B45 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll
+         C:\Windows\SYSTEM32\msvcrt.dll [7.0.9600.16384]
+76A79A22 C:\Windows\SYSTEM32\msvcrt.dll  free
+76A79A15 C:\Windows\SYSTEM32\msvcrt.dll  free
+         C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+73472D46 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll
+         C:\Windows\SYSTEM32\msvcrt.dll [7.0.9600.16384]
+76A79A22 C:\Windows\SYSTEM32\msvcrt.dll  free
+         C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll [1.18.4.0]
+734AA3E3 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll
+734733A6 C:\Users\Administrator\Desktop\PidginPortable\App\Pidgin\plugins\libsipe.dll
+
+

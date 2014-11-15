@@ -6,12 +6,9 @@ Start-Transcript -Path "c:\users\public\Desktop\Transcript$(get-date -Format yyy
 if (test-path c:\deploy) {set-location c:\deploy} else {set-location c:\eic\deploy -ErrorAction Stop}
 
 [xml]$XML = Get-Content ".\Settings.xml" 
-$SpecialNodes = @("Hosts","DNSRecords","DerivedParameters","Stages","Functions","AutoSPInstallerXML")
-$ExclusionXPath = ""
-$SpecialNodes | % { $ExclusionXpath += "[not(self::$_)]" }
+$ConfigNode = $XML | Select-XML -XPath "//Configuration/Parameters/*"
+$ConfigNode | % { $_.Node.ChildNodes.Name | % { Set-Variable $_ -Value ($xml.SelectSingleNode("//$_").innertext) -Scope Script } }
 
-$ConfigNodes = $XML | Select-XML -XPath "//Configuration/*$ExclusionXpath"
-$ConfigNodes | % { $_.Node.ChildNodes.Name | % { Set-Variable $_ -Value ($xml.SelectSingleNode("//$_").innertext) -Scope Script } }
 $XML.Configuration.Hosts.ChildNodes | % { Set-Variable $_.Name -Value $_ -Scope Script }
     
 $DerivedParameters = $xml | Select-XML -XPath "//Configuration/DerivedParameters" 
@@ -20,12 +17,21 @@ $DerivedParameters | % { $_.Node.ChildNodes.Name | %{ Set-Variable $_ -Value (& 
 $FunctionNodes = Select-Xml -XPath "//Configuration/Functions/*" -xml $XML
 $FunctionNodes.node.ChildNodes | % {invoke-expression ". $($_.innertext)"}
 
-$AutoSPInstallerNode = $XML.SelectSingleNode("//Configuration/AutoSPInstallerXML/Configuration")
-$AutoSPInstallerXML=New-Object System.XML.XMLDocument
-$ImportNode = $AutoSPInstallerXML.ImportNode($AutoSPInstallerNode,$True)
-$AutoSPInstallerXML.AppendChild($ImportNode)
-$AutoSPInstallerXML.save($AutoSPInstallerXMLFile)
+if (-NOT (Test-Path $AutoSPInstallerXMLFile)) {
+    $AutoSPInstallerNode = $xml.Configuration.AutoSPInstallerXML.Configuration
+    $AutoSPInstallerXML=New-Object System.XML.XMLDocument
+    $ImportNode = $AutoSPInstallerXML.ImportNode($AutoSPInstallerNode,$True)
+    $AutoSPInstallerXML.AppendChild($ImportNode)
+    $AutoSPInstallerXML.save($AutoSPInstallerXMLFile)
+    }
 
+if (-NOT (Test-Path $TopologyFile)) {
+    $LyncTopologyNode = $xml.Configuration.LyncTopology.FirstChild
+    $LyncTopologyXML = New-Object System.XML.XMLDocument
+    $ImportNode = $LyncTopologyXML.ImportNode($LyncTopologyNode,$True)
+    $LyncTopologyXML.AppendChild($ImportNode)
+    $LyncTopologyXML.save($TopologyFile)
+    }
 
 ValidateParameters
 
@@ -58,7 +64,13 @@ if (($FlowNodes.node.ChildNodes.Name -match "$Flow")) {
 $Command = $FlowNode.Childnodes | ? Order -eq $Step | Select -ExpandProperty Command
 Invoke-Expression $Command
 
-if (!($Error[0])) {Restart-Computer} else {Write-Host "Errors!"; $Error | Select-Object * | Out-File c:\errors.txt -Append; notepad.exe c:\errors.txt}
+if (!($Error[0])) {
+    Restart-Computer -Force
+    } else {
+    Write-Host "Errors!"; 
+    $Error | Select-Object * | Out-File c:\errors.txt -Append; 
+    notepad.exe c:\errors.txt
+    }
 
 
 

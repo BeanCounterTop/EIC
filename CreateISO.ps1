@@ -1,4 +1,9 @@
-﻿function New-IsoFile 
+﻿$ISOPath = "$Env:UserProfile\Desktop\deploy.iso"
+$SourcePath = "c:\eic\deploy\."
+
+
+
+function New-IsoFile 
 { 
   <# 
    .Synopsis 
@@ -90,7 +95,6 @@ public class ISOFile
   }#End End 
 }#End function New-IsoFile 
 
-$ISOPath = "$Env:UserProfile\Desktop\deploy.iso"
-$SourcePath = "c:\eic\deploy\."
+
 if (test-path $isopath) {remove-item $ISOPath}
 new-isofile -Source (dir $SourcePath) -Path $ISOPath

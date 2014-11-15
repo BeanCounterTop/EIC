@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<account version='1.0'>
+	<account>
+		<protocol>prpl-sipe</protocol>
+		<name>lyncuser1@jivedev.com,lyncuser1@jivedev.com</name>
+		<password>Abc123!</password>
+		<alias>LyncUser1</alias>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes>
+					<attribute id='message' value='Lynctastic!'/>
+				</attributes>
+			</status>
+			<status type='busy' name='Busy' active='false'>
+				<attributes/>
+			</status>
+			<status type='do-not-disturb' name='Do not disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='on-the-phone' name='In a call' active='false'>
+				<attributes/>
+			</status>
+			<status type='in-a-conference' name='In a conference' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='be-right-back' name='Be right back' active='false'>
+				<attributes/>
+			</status>
+			<status type='invisible' name='Invisible' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='authentication' type='string'>ntlm</setting>
+			<setting name='sso' type='bool'>0</setting>
+			<setting name='transport' type='string'>auto</setting>
+			<setting name='dont-publish' type='bool'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+	<account>
+		<protocol>prpl-sipe</protocol>
+		<name>LyncUser2@jivedev.com,LyncUser2@jivedev.com</name>
+		<password>Abc123!</password>
+		<alias>LyncUser2</alias>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes>
+					<attribute id='message' value='Lynctastic!'/>
+				</attributes>
+			</status>
+			<status type='busy' name='Busy' active='false'>
+				<attributes/>
+			</status>
+			<status type='do-not-disturb' name='Do not disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='on-the-phone' name='In a call' active='false'>
+				<attributes/>
+			</status>
+			<status type='in-a-conference' name='In a conference' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='be-right-back' name='Be right back' active='false'>
+				<attributes/>
+			</status>
+			<status type='invisible' name='Invisible' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='authentication' type='string'>ntlm</setting>
+			<setting name='sso' type='bool'>0</setting>
+			<setting name='transport' type='string'>auto</setting>
+			<setting name='dont-publish' type='bool'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+	<account>
+		<protocol>prpl-sipe</protocol>
+		<name>LyncUser3@jivedev.com,LyncUser3@jivedev.com</name>
+		<password>Abc123!</password>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes>
+					<attribute id='message' value='Lynctastic!'/>
+				</attributes>
+			</status>
+			<status type='busy' name='Busy' active='false'>
+				<attributes/>
+			</status>
+			<status type='do-not-disturb' name='Do not disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='on-the-phone' name='In a call' active='false'>
+				<attributes/>
+			</status>
+			<status type='in-a-conference' name='In a conference' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='be-right-back' name='Be right back' active='false'>
+				<attributes/>
+			</status>
+			<status type='invisible' name='Invisible' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='authentication' type='string'>ntlm</setting>
+			<setting name='sso' type='bool'>0</setting>
+			<setting name='transport' type='string'>auto</setting>
+			<setting name='dont-publish' type='bool'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+</account>
