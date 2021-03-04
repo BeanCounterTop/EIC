@@ -12,3 +12,4 @@ This project implements:
 * Sharepoint 2010 and 2013
 * Lync 2013
 * Pidgin
+* Polipo web-caching proxy
